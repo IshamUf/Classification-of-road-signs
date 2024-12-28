@@ -14,11 +14,6 @@ __pycache__/
 *.ipynb
 
 
-# Файлы датасета (например, JPG, PNG, CSV с датасетом)
-*.jpg
-*.jpeg
-*.png
-*.csv
 
 # Чекпоинты PyTorch Lightning
 *.ckpt
