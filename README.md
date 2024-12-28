@@ -13,6 +13,12 @@
 Если текущая модель покажется ***слишком простой***,
 то я постараюсь её усложнить к следующему дедлайну ДЗ-3.
 
+**Команды**:
+- **train:** python commands.py train --data-path 'Путь к датасету' --epochs 20 --batch-size 64
+- **infer:** python commands.py infer --ckpt-path 'Путь к модели' --image-path 'Путь к картинке'
+- **test:** python commands.py test --data-path 'Путь к датасету' --ckpt-path M'Путь к модели' --batch-size 64
+
+
 ## Структура проекта
 
 ```bash 
