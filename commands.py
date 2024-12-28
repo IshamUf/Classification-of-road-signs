@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# commands.py
-
 import argparse
 import os
 import subprocess
