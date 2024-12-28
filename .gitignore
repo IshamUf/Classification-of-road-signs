@@ -1,0 +1,32 @@
+# Игнорировать всё в папке data
+data/*
+
+# Исключение: не игнорировать папку data_infer и её содержимое
+!data/data_infer/
+!data/data_infer/**
+
+# Системные файлы
+.DS_Store
+*.pyc
+__pycache__/
+
+# Jupyter notebooks (не загружать в репозиторий)
+*.ipynb
+
+
+# Файлы датасета (например, JPG, PNG, CSV с датасетом)
+*.jpg
+*.jpeg
+*.png
+*.csv
+
+# Чекпоинты PyTorch Lightning
+*.ckpt
+
+# Логи
+*.log
+lightning_logs/
+logs/
+
+# Другие файлы, которые не нужны в репозитории
+.env

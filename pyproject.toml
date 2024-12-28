@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "sign-recognizer"
+version = "0.1.0"
+description = "Mlops_hw_project"
+authors = ["ishamuf <amishmuratov@gmail.com>"]
+license = "MIT License"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+torch = "2.2.2"
+pytorch-lightning = "^2.5.0.post0"
+torchvision = "0.17.2"
+numpy = "1.24.3"
+pillow = "^11.0.0"
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^4.0.1"
+black = "22.3.0"
+isort = "5.12.0"
+flake8 = "6.1.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
