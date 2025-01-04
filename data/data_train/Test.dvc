@@ -1,0 +1,6 @@
+outs:
+- md5: 6536ebe2a85764605bedf18b4418efab.dir
+  size: 76024728
+  nfiles: 12631
+  hash: md5
+  path: Test
