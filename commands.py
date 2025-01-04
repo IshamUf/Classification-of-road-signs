@@ -1,5 +1,4 @@
 import argparse
-import os
 import subprocess
 import sys
 
@@ -7,50 +6,37 @@ from dvc.repo import Repo
 
 
 def get_data():
-    repo = Repo("Detection-and-classification-of-road-signs/data/data_train")
-    repo.pull()
+    with Repo() as repo:
+        repo.pull()
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Commands for GTSRB project",
+        description="Команды для commands",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    subparsers = parser.add_subparsers(dest="command", help="Sub-command help")
+    subparsers = parser.add_subparsers(dest="command")
 
-    # ------------------- train subcommand -------------------
-    train_parser = subparsers.add_parser("train", help="Run training")
+    train_parser = subparsers.add_parser("train", help="Запуск обучения")
+    # Можем не описывать параметры здесь, т.к. всё из Hydra
     train_parser.add_argument(
-        "--data-path", type=str, required=True, help="Path to GTSRB dataset."
+        "overrides",
+        nargs="*",
+        help="Дополнительные переопределения для Hydra (например: trainer.epochs=10)",
     )
-    train_parser.add_argument(
-        "--epochs", type=int, default=20, help="Number of epochs."
-    )
-    train_parser.add_argument("--batch-size", type=int, default=64, help="Batch size.")
 
-    # ------------------- test subcommand --------------------
-    test_parser = subparsers.add_parser("test", help="Run testing")
+    test_parser = subparsers.add_parser("test", help="Запуск тестирования")
     test_parser.add_argument(
-        "--data-path", type=str, required=True, help="Path to GTSRB dataset."
+        "overrides",
+        nargs="*",
+        help="Дополнительные переопределения для Hydra (например: data.batch_size=32)",
     )
-    test_parser.add_argument(
-        "--ckpt-path",
-        type=str,
-        required=True,
-        help="Path to the model checkpoint (.ckpt).",
-    )
-    test_parser.add_argument("--batch-size", type=int, default=64, help="Batch size.")
 
-    # ------------------- infer subcommand -------------------
-    infer_parser = subparsers.add_parser("infer", help="Run inference")
+    infer_parser = subparsers.add_parser("infer", help="Запуск инференса")
     infer_parser.add_argument(
-        "--ckpt-path",
-        type=str,
-        required=True,
-        help="Path to the model checkpoint (.ckpt).",
-    )
-    infer_parser.add_argument(
-        "--image-path", type=str, required=True, help="Path to the input image."
+        "overrides",
+        nargs="*",
+        help="Переопределения для Hydra (например: infer.image_path=some_image.png)",
     )
 
     args = parser.parse_args()
@@ -59,40 +45,23 @@ def main():
         get_data()
         cmd = [
             sys.executable,
-            os.path.join("sign_recognizer", "train.py"),
-            "--data-path",
-            args.data_path,
-            "--epochs",
-            str(args.epochs),
-            "--batch-size",
-            str(args.batch_size),
-        ]
+            "sign_recognizer/train.py",
+        ] + args.overrides
         subprocess.run(cmd, check=True)
 
     elif args.command == "test":
         get_data()
         cmd = [
             sys.executable,
-            os.path.join("sign_recognizer", "test.py"),
-            "--data-path",
-            args.data_path,
-            "--ckpt-path",
-            args.ckpt_path,
-            "--batch-size",
-            str(args.batch_size),
-        ]
+            "sign_recognizer/test.py",
+        ] + args.overrides
         subprocess.run(cmd, check=True)
 
     elif args.command == "infer":
-        get_data()
         cmd = [
             sys.executable,
-            os.path.join("sign_recognizer", "infer.py"),
-            "--ckpt-path",
-            args.ckpt_path,
-            "--image-path",
-            args.image_path,
-        ]
+            "sign_recognizer/infer.py",
+        ] + args.overrides
         subprocess.run(cmd, check=True)
 
     else:

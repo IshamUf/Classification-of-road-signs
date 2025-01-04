@@ -1,59 +1,48 @@
-import argparse
-
+import hydra
 import pytorch_lightning as pl
-import torchvision.transforms as T
+from omegaconf import DictConfig
 from torch.utils.data import DataLoader
 
-from sign_recognizer.constants import OUTPUT_DIM
 from sign_recognizer.dataset import GTSRB
 from sign_recognizer.model import GtsrbModel
 from sign_recognizer.trainer import LitGTSRBTrainer
+from sign_recognizer.utils.compose_builder import config_compose
 
 
-def parse_args():
-    """
-    Парсинг аргументов для тестирования.
-
-    Возвращает:
-        argparse.Namespace: Аргументы, включающие:
-            - data-path: Путь до тестового датасета.
-            - ckpt-path: Путь до чекпоинта модели.
-            - batch-size: Размер батча.
-    """
-    parser = argparse.ArgumentParser(description="Test script.")
-    parser.add_argument(
-        "--data-path", type=str, required=True, help="Путь до датасета."
-    )
-    parser.add_argument(
-        "--ckpt-path",
-        type=str,
-        required=True,
-        help="Путь к чекпоинту модели (.ckpt).",
-    )
-    parser.add_argument("--batch-size", type=int, default=64, help="Размер бача.")
-    return parser.parse_args()
-
-
-def main():
+@hydra.main(version_base=None, config_path="../configs", config_name="config")
+def main(cfg: DictConfig):
     """
     Основная функция для тестирования модели на тестовом датасете.
 
     Шаги:
-        1. Парсинг аргументов командной строки.
+        1. Парсинг аргументов из конфигов.
         2. Создание тестового датасета и загрузчика данных.
         3. Загрузка модели из указанного чекпоинта.
         4. Выполнение тестирования через PyTorch Lightning Trainer.
     """
-    args = parse_args()
-    test_transform = T.Compose([T.Resize([50, 50]), T.ToTensor()])
-    test_dataset = GTSRB(root=args.data_path, split="test", transform=test_transform)
-    test_loader = DataLoader(test_dataset, batch_size=args.batch_size, shuffle=False)
-    base_model = GtsrbModel(output_dim=OUTPUT_DIM)
+    data_cfg = cfg.data
+    model_cfg = cfg.model
+    trainer_cfg = cfg.trainer
+    transforms_cfg = cfg.transforms
+
+    test_dataset = GTSRB(root=data_cfg.root_dir, split="test", transform=None)
+    test_transform = config_compose(transforms_cfg.val_transforms)
+    test_dataset.transform = test_transform
+
+    test_loader = DataLoader(
+        test_dataset,
+        batch_size=data_cfg.batch_size,
+        shuffle=False,
+        num_workers=data_cfg.num_workers,
+    )
+
+    base_model = GtsrbModel(output_dim=model_cfg.output_dim)
+    ckpt_path = trainer_cfg.ckpt_path
     lit_model = LitGTSRBTrainer.load_from_checkpoint(
-        checkpoint_path=args.ckpt_path, model=base_model
+        checkpoint_path=ckpt_path, model=base_model
     )
     trainer = pl.Trainer(accelerator="auto", devices="auto")
-    trainer.test(lit_model, dataloaders=test_loader)
+    trainer.test(lit_model, test_loader)
 
 
 if __name__ == "__main__":

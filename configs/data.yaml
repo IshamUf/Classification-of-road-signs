@@ -1,0 +1,5 @@
+root_dir: "data/data_train"
+train_csv: "Train.csv"
+test_csv: "Test.csv"
+batch_size: 64
+num_workers: 4
