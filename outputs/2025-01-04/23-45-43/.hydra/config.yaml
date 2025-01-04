@@ -1,0 +1,54 @@
+data:
+  root_dir: data/data_train
+  train_csv: Train.csv
+  test_csv: Test.csv
+  batch_size: 64
+  num_workers: 4
+model:
+  output_dim: 43
+trainer:
+  epochs: 20
+  learning_rate: 0.0008
+  ckpt_path: Models/gtsrb_model.ckpt
+  val_ratio: 0.2
+transforms:
+  train_transforms:
+  - type: ColorJitter
+    brightness: 1.0
+    contrast: 0.5
+    saturation: 1
+    hue: 0.1
+  - type: RandomEqualize
+    p: 0.4
+  - type: AugMix
+  - type: RandomHorizontalFlip
+    p: 0.3
+  - type: RandomVerticalFlip
+    p: 0.3
+  - type: GaussianBlur
+    kernel_size:
+    - 3
+    - 3
+  - type: RandomRotation
+    degrees: 30
+  - type: Resize
+    size:
+    - 50
+    - 50
+  - type: ToTensor
+  val_transforms:
+  - type: Resize
+    size:
+    - 50
+    - 50
+  - type: ToTensor
+  infer_transforms:
+  - type: Resize
+    size:
+    - 50
+    - 50
+  - type: ToTensor
+seed: 42
+device: cuda
+infer:
+  image_path: data/data_infer/id_4.png

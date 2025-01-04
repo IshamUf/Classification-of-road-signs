@@ -1,10 +1,6 @@
-data/*
-!data/data_infer/
-!data/data_infer/**
-!data/data_train/
-!data/data_train/**
-!data/*.dvc
-!data/**/*.dvc
+data/data_test
+data/data_train
+!data/data_train/*.dvc
 
 .DS_Store
 *.pyc

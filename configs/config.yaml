@@ -3,9 +3,10 @@ defaults:
   - model: model
   - trainer: trainer
   - transforms: transforms
+  - _self_
 
 seed: 42
 device: cuda
 
 infer:
-  image_path: "data_infer/id_4.png"
+  image_path: "data/data_infer/id_4.png"
