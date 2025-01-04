@@ -1,0 +1,4 @@
+[core]
+    remote = hranilishe
+['remote "hranilishe"']
+    url = s3://my-hranilishe/vot_tut

@@ -3,6 +3,13 @@ import os
 import subprocess
 import sys
 
+from dvc.repo import Repo
+
+
+def get_data():
+    repo = Repo("Detection-and-classification-of-road-signs/data/data_train")
+    repo.pull()
+
 
 def main():
     parser = argparse.ArgumentParser(
@@ -49,6 +56,7 @@ def main():
     args = parser.parse_args()
 
     if args.command == "train":
+        get_data()
         cmd = [
             sys.executable,
             os.path.join("sign_recognizer", "train.py"),
@@ -62,6 +70,7 @@ def main():
         subprocess.run(cmd, check=True)
 
     elif args.command == "test":
+        get_data()
         cmd = [
             sys.executable,
             os.path.join("sign_recognizer", "test.py"),
@@ -75,6 +84,7 @@ def main():
         subprocess.run(cmd, check=True)
 
     elif args.command == "infer":
+        get_data()
         cmd = [
             sys.executable,
             os.path.join("sign_recognizer", "infer.py"),

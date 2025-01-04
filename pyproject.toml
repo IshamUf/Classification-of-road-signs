@@ -13,6 +13,7 @@ pytorch-lightning = "^2.5.0.post0"
 torchvision = "0.17.2"
 numpy = "1.24.3"
 pillow = "^11.0.0"
+dvc = "^3.58.0"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^4.0.1"
