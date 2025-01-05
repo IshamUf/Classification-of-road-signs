@@ -1,9 +1,9 @@
-# Classification of Road Signs
+# Recognizer-of-road-signs
 
 ## Структура проекта
 
 ```bash 
-Classification-of-road-signs
+Recognizer-of-road-signs
 ├── .dvc                      # служебная папка DVC
 ├── configs                   # Конфиги Hydra
 │   ├── config.yaml           # Главный конфиг (defaults)
