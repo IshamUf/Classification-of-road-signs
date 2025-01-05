@@ -3,6 +3,7 @@ defaults:
   - model: model
   - trainer: trainer
   - transforms: transforms
+  - mlflow: mlflow
   - _self_
 
 seed: 42

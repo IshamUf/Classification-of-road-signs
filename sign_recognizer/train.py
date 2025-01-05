@@ -2,6 +2,7 @@ import hydra
 import pytorch_lightning as pl
 import torch
 from omegaconf import DictConfig
+from pytorch_lightning.loggers import MLFlowLogger
 from torch.utils.data import DataLoader, random_split
 
 from sign_recognizer.dataset import GTSRB
@@ -14,6 +15,10 @@ from sign_recognizer.utils.compose_builder import config_compose
 def main(cfg: DictConfig):
     """
     Основная функция для тренировки модели.
+
+    Запуск:
+      python commands.py train
+      python commands.py train mlflow.run_name="run_name" trainer.epochs=10
 
     Шаги:
         1. Парсинг аргументов из конфигов.
@@ -32,6 +37,7 @@ def main(cfg: DictConfig):
     model_cfg = cfg.model
     trainer_cfg = cfg.trainer
     transforms_cfg = cfg.transforms
+    mlflow_cfg = cfg.mlflow
 
     dataset = GTSRB(root=data_cfg.root_dir, split="train", transform=None)
 
@@ -65,11 +71,28 @@ def main(cfg: DictConfig):
         model=base_model, learning_rate=trainer_cfg.learning_rate
     )
 
+    mlflow_logger = MLFlowLogger(
+        experiment_name=mlflow_cfg.experiment_name,
+        run_name=mlflow_cfg.run_name,
+        tracking_uri=mlflow_cfg.server_url,
+        save_dir=mlflow_cfg.save_dir,
+    )
+
     trainer = pl.Trainer(
         max_epochs=trainer_cfg.epochs,
         accelerator="auto",
         devices="auto",
+        logger=mlflow_logger,
     )
+
+    hyperparams = {
+        "batch_size": data_cfg.batch_size,
+        "lr": trainer_cfg.learning_rate,
+        "epochs": trainer_cfg.epochs,
+        "val_ratio": trainer_cfg.val_ratio,
+        "output_dim": model_cfg.output_dim,
+    }
+    mlflow_logger.log_hyperparams(hyperparams)
 
     trainer.fit(lit_model, train_loader, val_loader)
 

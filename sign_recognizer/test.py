@@ -1,6 +1,7 @@
 import hydra
 import pytorch_lightning as pl
 from omegaconf import DictConfig
+from pytorch_lightning.loggers import MLFlowLogger
 from torch.utils.data import DataLoader
 
 from sign_recognizer.dataset import GTSRB
@@ -20,10 +21,12 @@ def main(cfg: DictConfig):
         3. Загрузка модели из указанного чекпоинта.
         4. Выполнение тестирования через PyTorch Lightning Trainer.
     """
+
     data_cfg = cfg.data
     model_cfg = cfg.model
     trainer_cfg = cfg.trainer
     transforms_cfg = cfg.transforms
+    mlflow_cfg = cfg.mlflow
 
     test_dataset = GTSRB(root=data_cfg.root_dir, split="test", transform=None)
     test_transform = config_compose(transforms_cfg.val_transforms)
@@ -37,11 +40,18 @@ def main(cfg: DictConfig):
     )
 
     base_model = GtsrbModel(output_dim=model_cfg.output_dim)
-    ckpt_path = trainer_cfg.ckpt_path
     lit_model = LitGTSRBTrainer.load_from_checkpoint(
-        checkpoint_path=ckpt_path, model=base_model
+        checkpoint_path=trainer_cfg.ckpt_path, model=base_model
     )
-    trainer = pl.Trainer(accelerator="auto", devices="auto")
+
+    mlflow_logger = MLFlowLogger(
+        experiment_name=mlflow_cfg.experiment_name,
+        run_name=mlflow_cfg.run_name + "_test",
+        tracking_uri=mlflow_cfg.server_url,
+        save_dir=mlflow_cfg.save_dir,
+    )
+
+    trainer = pl.Trainer(accelerator="auto", devices="auto", logger=mlflow_logger)
     trainer.test(lit_model, test_loader)
 
 

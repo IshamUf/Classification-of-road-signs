@@ -1,0 +1,4 @@
+server_url: "http://127.0.0.1:5000"
+experiment_name: "Classification-of-road-signs"
+run_name: "run_name"
+save_dir: "."

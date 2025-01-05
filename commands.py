@@ -18,7 +18,6 @@ def main():
     subparsers = parser.add_subparsers(dest="command")
 
     train_parser = subparsers.add_parser("train", help="Запуск обучения")
-    # Можем не описывать параметры здесь, т.к. всё из Hydra
     train_parser.add_argument(
         "overrides",
         nargs="*",
