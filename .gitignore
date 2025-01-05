@@ -14,5 +14,6 @@ lightning_logs/
 logs/
 
 .env
-/outputs/
 /mlruns/
+/outputs/
+/.hydra/
