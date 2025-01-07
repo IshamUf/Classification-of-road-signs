@@ -26,6 +26,8 @@ Recognizer-of-road-signs
 │       ├── Meta.csv.dvc
 │       ├── Test.csv.dvc
 │       └── Train.csv.dvc
+├── models           
+│   └── gtsrb_model.ckpt.dvc  # Обученная модель
 ├── sign_recognizer           # Основной код
 │   ├── dataset.py            # Класс GTSRB датасета
 │   ├── infer.py              # Скрипт для инференса
