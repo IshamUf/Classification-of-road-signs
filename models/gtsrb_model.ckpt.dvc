@@ -1,0 +1,5 @@
+outs:
+- md5: a9be254e9af5288da5d7a637b8338924
+  size: 177062990
+  hash: md5
+  path: gtsrb_model.ckpt

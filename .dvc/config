@@ -1,4 +1,4 @@
 [core]
-    remote = hranilishe
-['remote "hranilishe"']
-    url = s3://my-hranilishe/vot_tut
+    remote = localremote
+['remote "localremote"']
+    url = ../../dvc_storage

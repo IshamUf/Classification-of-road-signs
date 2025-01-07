@@ -1,4 +1,4 @@
 epochs: 20
 learning_rate: 0.0008
-ckpt_path: "Models/gtsrb_model.ckpt"
+ckpt_path: "models/gtsrb_model.ckpt"
 val_ratio: 0.2
